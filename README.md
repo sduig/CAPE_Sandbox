@@ -28,7 +28,7 @@ Copy
 based on the steps we used to build it create one
 
 
-Drafted CAPE setup guide
+#Drafted CAPE setup guide
 Here's a consolidated guide based on your actual build:
 
 CAPEv2 on Linux Mint + VMware Workstation — Build Guide
@@ -57,7 +57,7 @@ sudo useradd -r -s /bin/false mongodb
 sudo mkdir -p /data/db /var/log/mongodb /var/run/mongodb
 sudo chown -R mongodb:mongodb /data/db /var/log/mongodb /var/run/mongodb
 
-# Add repo (use jammy for Mint 21.x, noble for 22.x)
+** Add repo (use jammy for Mint 21.x, noble for 22.x)
 sudo wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
 echo "deb [signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] http://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 
@@ -109,32 +109,32 @@ Win11 only: Select guest OS as "Windows 10 x64" in the wizard (avoids forced enc
 
 Install → "I don't have a product key" → skip network → local account user / user.
 
-Harden (elevated PowerShell on each VM)
-# Defender
+#Harden (elevated PowerShell on each VM)
+* Defender
 Set-MpPreference -DisableRealtimeMonitoring $true
 Set-MpPreference -EnableControlledFolderAccess Disabled
 Set-MpPreference -PUAProtection Disabled
 
-# Firewall
+* Firewall
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 
-# Windows Update
+* Windows Update
 New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Force
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "NoAutoUpdate" -Value 1
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUOptions" -Value 1
 Set-Service -Name wuauserv -StartupType Disabled
 Set-Service -Name UsoSvc -StartupType Disabled
 
-# UAC
+* UAC
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLUA" -Value 0
 
-# Sleep / lock
+* Sleep / lock
 powercfg /change standby-timeout-ac 0
 powercfg /change monitor-timeout-ac 0
 powercfg /change disk-timeout-ac 0
 powercfg /h off
 
-# SmartScreen
+* SmartScreen
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v EnableWebContentTrust /t REG_DWORD /d 0 /f
 
 Static IP (elevated PowerShell)
