@@ -109,7 +109,7 @@ Win11 only: Select guest OS as "Windows 10 x64" in the wizard (avoids forced enc
 
 Install → "I don't have a product key" → skip network → local account user / user.
 
-#Harden (elevated PowerShell on each VM)
+# Harden (elevated PowerShell on each VM)
 * Defender
 Set-MpPreference -DisableRealtimeMonitoring $true
 Set-MpPreference -EnableControlledFolderAccess Disabled
@@ -160,7 +160,7 @@ After Python:
 
 python -m pip install pillow pywin32
 
-Deploy Agent
+# Deploy Agent
 copy C:\Users\user\Downloads\agent.py "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\pizza.pyw"
 
 Task Scheduler:
@@ -279,4 +279,28 @@ Chrome won't install	Use standalone installer, not web stub; install VC++ redist
 del /q errors in PowerShell	Use cmd.exe for del commands, not PowerShell
 HKLM: path not resolving in PowerShell	Use Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\... or use reg add in cmd.exe
 
+# Usage
+Host (one-time):
 
+chmod +x cape-host-setup.sh
+sudo bash cape-host-setup.sh
+
+Guest (after Windows install, before snapshot):
+
+# Full setup (hardening + IP + software + agent + autologon)
+.\cape-guest-setup.ps1 -IP 172.16.204.100
+
+# Later, before snapshot (cleanup only)
+.\cape-guest-setup.ps1 -IP 172.16.204.100 -CleanupOnly
+
+# What still requires manual GUI work:
+
+Step	                          Why
+Create VM in VMware Workstation	No CLI for VM creation on Linux
+Install Windows from ISO	      Interactive OOBE
+Win11 TPM bypass (regedit in WinPE)	Shift+F10 during setup
+Install Office 2010 SP2	ISO     mount + GUI installer
+Take snapshot	                  VMware GUI (or vmrun snapshot)
+Verify agent responds	          curl from host
+
+Everything else — hardening, IP, software, agent, autologon, cleanup, CAPE config, MongoDB, services — is fully automated by the two scripts.
